@@ -60,20 +60,22 @@ Unzip the `data.zip` file to the project root and your folder structure should l
 - `model/`: implementation of RippleNet
 - `tools/`: data loader and model metrics
 - `data/book/`
-  - `book_ratings.csv`: raw rating file of Book-Crossing dataset
+  - `book_ratings.csv`: raw rating file of Book-Crossing dataset (see http://www2.informatik.uni-freiburg.de/~cziegler/BX/) with format: "User-ID";"ISBN";"Book-Rating" where "Book-Rating"expressed on a scale from 1-10 (higher values denoting higher appreciation)
   - `item_index2entity_id.txt`: the mapping from item indices in the raw rating file to entity IDs in the KG
   - `kg.txt`: book knowledge graph file
-- `data/movie/` 
+- `data/movie/`: MovieLens-1M dataset (see http://files.grouplens.org/datasets/movielens/ml-1m-README.txt) 
   - `item_index2entity_id.txt`: the mapping from item indices in the raw rating file to entity IDs in the KG
   - `kg_part1.txt` and `kg_part2.txt`: movie knowledge graph files
-  - `movie_ratings.dat`: raw rating file of MovieLens-1M;
+  - `movie_ratings.dat`: Ratings are made on a 5-star scale (whole-star ratings only). UserID::MovieID::Rating::Timestamp, such as `10::356::5::978226833`, user 10, rated Forrest Gump with 5 star
+  - `users.dat`: UserID::Gender::Age::Occupation::Zip-code, such as `10::F::35::1::95370`, user 10, female, 35 years old, academic/educator occupation, zip 95370.
+  - `movies.dat`: MovieID::Title::Genres, such as `356::Forrest Gump (1994)::Comedy|Romance|War`
 
 
 ## Run
 
 for the movie dataset (for the book dataset, replace movie with book in the commands):
 
-- run `python preprocess.py --dataset movie` - this will generate two new files `kg_final.txt` and `ratings_final.txt`
+- run `python preprocess.py --dataset movie` - this will generate two new files `kg_final.txt` (format is head_item_id relation_id tail_id) and `ratings_final.txt` (format is user_id item_id 1/0 1 means interested otherwise 0)
 - run `python main.py --dataset movie` - this will start the training, create a `logs` folder, and do a final evaluation
 
 By default, the model is trained using 10 epochs, which takes about 25 minutes on a MacBook Pro (3.1 GHz Dual-Core Intel Core i5 with 8G RAM). One sample evaluation result is as follows:

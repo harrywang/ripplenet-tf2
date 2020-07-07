@@ -1,23 +1,30 @@
 import argparse
 import numpy as np
 
+# news dataset has not been included yet
 RATING_FILE_NAME = dict({'movie': 'movie_ratings.dat', 'book': 'book_ratings.csv', 'news': 'ratings.txt'})
+
+# different rating files have different separators
 SEP = dict({'movie': '::', 'book': ';', 'news': '\t'})
+
 THRESHOLD = dict({'movie': 4, 'book': 0, 'news': 0})
+
+# whether to skip the heading line in file
 SKIP_LINE = dict({'movie': 0, 'book': 1, 'news': 0})
 
-
+# item_index2entity_id_rehashed.txt maps the id in movie and book dataset
+# to the kg satori id
 def read_item_index_to_entity_id_file():
     file = 'data/' + DATASET + '/item_index2entity_id_rehashed.txt'
     print('reading item index to entity id file: ' + file + ' ...')
     i = 0
     for line in open(file, encoding='utf-8').readlines():
-        item_index = line.strip().split('\t')[0]
-        satori_id = line.strip().split('\t')[1]
+        item_index = line.strip().split('\t')[0]  # item id from the movie dataset
+        satori_id = line.strip().split('\t')[1]  # satori id from the kg
         item_index_old2new[item_index] = i
         entity_id2index[satori_id] = i
         i += 1
-
+    print(item_index_old2new, entity_id2index)
 
 def convert_rating():
     file = 'data/' + DATASET + '/' + RATING_FILE_NAME[DATASET]
