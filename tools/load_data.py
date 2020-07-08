@@ -9,7 +9,9 @@ class LoadData:
         self.data_path = os.path.join(args.base_path, 'data/')
 
     def load_data(self):
+        # user_history_dict has all users and their corresponding positive rated items 
         train_data, test_data, user_history_dict = self.load_rating()
+
         n_entity, n_relation, kg = self.load_kg()
         ripple_set = self.get_ripple_set(kg, user_history_dict)
         return train_data, test_data, n_entity, n_relation, ripple_set
@@ -17,36 +19,39 @@ class LoadData:
     def load_rating(self):
         print('reading rating file ...')
 
-        # reading rating file
+        # reading rating file into a numpy array
+        # e.g. rating_np.shape for movie dataset is (753774, 3)
         rating_file = self.data_path + self.args.dataset + '/ratings_final'
         if os.path.exists(rating_file + '.npy'):
             rating_np = np.load(rating_file + '.npy')
         else:
             rating_np = np.loadtxt(rating_file + '.txt', dtype=np.int32)
             np.save(rating_file + '.npy', rating_np)
-
+        
         print('splitting dataset ...')
 
         # train:test = 6:2
         test_ratio = 0.2
-        n_ratings = rating_np.shape[0]
+        n_ratings = rating_np.shape[0]  # total number of ratings, movie 753774
 
+        # get the test ratings indices 20%
         test_indices = np.random.choice(n_ratings,
                                         size=int(n_ratings * test_ratio),
                                         replace=False)
-        train_indices = set(range(n_ratings)) - set(test_indices)
+        train_indices = set(range(n_ratings)) - set(test_indices)  # train 80%
 
         # traverse training data, only keeping the users with positive ratings
         user_history_dict = dict()
         for i in train_indices:
-            user = rating_np[i][0]
-            item = rating_np[i][1]
-            rating = rating_np[i][2]
+            user = rating_np[i][0]  # user
+            item = rating_np[i][1]  # item
+            rating = rating_np[i][2]  # rating 1 or 0
             if rating == 1:
                 if user not in user_history_dict:
                     user_history_dict[user] = []
                 user_history_dict[user].append(item)
-
+        
+        # user_history_dict has all users and their corresponding positive rated items 
         train_indices = [i for i in train_indices
                          if rating_np[i][0] in user_history_dict]
         test_indices = [i for i in test_indices
@@ -68,8 +73,8 @@ class LoadData:
             kg_np = np.loadtxt(kg_file + '.txt', dtype=np.int32)
             np.save(kg_file + '.npy', kg_np)
 
-        n_entity = len(set(kg_np[:, 0]) | set(kg_np[:, 2]))
-        n_relation = len(set(kg_np[:, 1]))
+        n_entity = len(set(kg_np[:, 0]) | set(kg_np[:, 2]))  # unique number of entities
+        n_relation = len(set(kg_np[:, 1]))  # unique number of relations
 
         print('constructing knowledge graph ...')
         kg = collections.defaultdict(list)
