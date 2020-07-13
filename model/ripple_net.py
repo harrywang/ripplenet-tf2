@@ -40,13 +40,13 @@ class RippleNet(BuildModel):
             r_inputs.append(Input(shape=(self.n_memory,), name="r_inputs_{}".format(hop), dtype=tf.int32))
             t_inputs.append(Input(shape=(self.n_memory,), name="t_inputs_{}".format(hop), dtype=tf.int32))
 
-        # Matmul layer
+        # Matmul layer: Multiplies matrix a by matrix b, producing a * b.
         matmul = Lambda(lambda x: tf.matmul(x[0], x[1]))
 
         # Embedding layer
         l2 = keras.regularizers.l2(self.l2_weight)
-        entity_embedding = Embedding(self.n_entity,
-                                     self.dim,
+        entity_embedding = Embedding(self.n_entity, # input dimension
+                                     self.dim, # output dimension
                                      embeddings_initializer='glorot_uniform',
                                      embeddings_regularizer=l2,
                                      name="entity_embedding")

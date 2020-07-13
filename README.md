@@ -78,6 +78,8 @@ for the movie dataset (for the book dataset, replace movie with book in the comm
 - run `python preprocess.py --dataset movie` - this will generate two new files `kg_final.txt` (format is head_item_id relation_id tail_id) and `ratings_final.txt` (format is user_id item_id 1/0 1 means interested otherwise 0)
 - run `python main.py --dataset movie` - this will start the training, create a `logs` folder, and do a final evaluation
 
+`main.py` has all the hyperparameters with default values, which creates an instance of `ripple_net.py` and pass all arguments.
+
 By default, the model is trained using 10 epochs, which takes about 25 minutes on a MacBook Pro (3.1 GHz Dual-Core Intel Core i5 with 8G RAM). One sample evaluation result is as follows:
 
 ```

@@ -80,7 +80,7 @@ class LoadData:
         kg = collections.defaultdict(list)
         for head, relation, tail in kg_np:
             kg[head].append((tail, relation))
-
+        # kg is a dict with head: [(tail, relation)...]
         return n_entity, n_relation, kg
 
     def get_ripple_set(self, kg, user_history_dict):
